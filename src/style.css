@@ -866,3 +866,352 @@ h1 {
     margin: 0;
   }
 }
+
+
+/* =========================
+   Mobile Master Luxo
+   ========================= */
+
+.mobile-live-shell {
+  display: none;
+}
+
+@media (max-width: 780px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 10% 0%, rgba(24,183,218,.18), transparent 260px),
+      radial-gradient(circle at 100% 35%, rgba(14,27,103,.35), transparent 300px),
+      linear-gradient(180deg, #0b1220 0%, #111827 100%);
+  }
+
+  .app {
+    width: 100%;
+    min-height: 100svh;
+    display: block;
+    padding: 12px;
+  }
+
+  .panel {
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, .28);
+  }
+
+  .panel-head h2 {
+    font-size: 23px;
+    line-height: 1.05;
+  }
+
+  .panel-head p {
+    font-size: 14px;
+    line-height: 1.42;
+    margin: 8px 0 14px;
+  }
+
+  .info-card {
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+
+  .info-card h3 {
+    font-size: 12px;
+    letter-spacing: .07em;
+    margin-bottom: 12px;
+  }
+
+  .two-columns {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid,
+  .info-card-body {
+    gap: 10px;
+  }
+
+  .field {
+    gap: 5px;
+  }
+
+  .field span {
+    font-size: 10px;
+    letter-spacing: .06em;
+  }
+
+  .field input {
+    height: 44px;
+    border-radius: 13px;
+    font-size: 14px;
+    padding: 0 12px;
+  }
+
+  .summary-row {
+    display: grid;
+    gap: 4px;
+    padding: 11px 12px;
+  }
+
+  .summary-row span {
+    font-size: 12px;
+  }
+
+  .summary-row strong {
+    font-size: 15px;
+  }
+
+  .export-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .export-buttons button,
+  .buttons button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 12px;
+  }
+
+  .hint {
+    align-items: flex-start;
+    line-height: 1.35;
+    margin-top: 10px;
+  }
+
+  .preview-wrap {
+    width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 16px 0 4px;
+    overflow: visible;
+    display: block;
+  }
+
+  .preview-stage {
+    display: none !important;
+  }
+
+  .mobile-live-shell {
+    display: block;
+    width: 100%;
+  }
+
+  .mobile-live-frame {
+    width: min(100%, 430px);
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 36px;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,.16), rgba(255,255,255,.04)),
+      linear-gradient(180deg, rgba(14,27,103,.55), rgba(24,183,218,.20));
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, .36),
+      inset 0 1px 0 rgba(255,255,255,.22);
+    position: relative;
+  }
+
+  .mobile-live-notch {
+    width: 90px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.32);
+    margin: 3px auto 10px;
+  }
+
+  .mobile-live-sheet {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    min-height: 720px;
+    background:
+      radial-gradient(circle at 90% 0%, rgba(24,183,218,.16), transparent 210px),
+      linear-gradient(180deg, #fbfdff 0%, #edf4fa 100%);
+    color: #334155;
+  }
+
+  .mobile-live-sheet::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: .11;
+    pointer-events: none;
+    background-image: radial-gradient(#8390a5 0.7px, transparent 0.7px);
+    background-size: 4px 4px;
+  }
+
+  .mobile-live-sheet .sheet-accent {
+    width: 18px;
+    height: 128px;
+    border-radius: 0 16px 16px 0;
+    top: 16px;
+  }
+
+  .mobile-live-sheet .orb-one {
+    width: 260px;
+    height: 260px;
+    top: -135px;
+    right: -100px;
+  }
+
+  .mobile-live-sheet .orb-two {
+    width: 180px;
+    height: 180px;
+    bottom: -90px;
+    left: -70px;
+  }
+
+  .mobile-live-sheet .logo-watermark {
+    width: 150px;
+    right: 8px;
+    bottom: 12px;
+    opacity: .05;
+  }
+
+  .mobile-live-top {
+    position: relative;
+    z-index: 2;
+    padding: 28px 22px 16px;
+    text-align: center;
+  }
+
+  .mobile-live-logo {
+    width: 86px;
+    height: 86px;
+    border-radius: 22px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 12px;
+    background: linear-gradient(160deg, rgba(14,27,103,.08), rgba(24,183,218,.16));
+    border: 1px solid rgba(14,27,103,.08);
+  }
+
+  .mobile-live-logo img {
+    width: 70px;
+    height: auto;
+  }
+
+  .mobile-live-top p {
+    margin: 0 0 5px;
+    color: var(--cyan);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .mobile-live-top h1 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 28px;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .mobile-live-info {
+    margin: 13px auto 0;
+    display: grid;
+    gap: 5px;
+    color: #526174;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .mobile-live-info strong {
+    color: var(--navy);
+  }
+
+  .mobile-live-content {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    gap: 12px;
+    padding: 0 14px 18px;
+  }
+
+  .mobile-live-card {
+    background: rgba(255,255,255,.84);
+    border: 1px solid rgba(150,166,188,.28);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 14px 34px rgba(14,27,103,.07);
+  }
+
+  .mobile-live-card h2 {
+    margin: 0 0 12px;
+    color: #536174;
+    font-size: 15px;
+    line-height: 1.05;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -.2px;
+  }
+
+  .mobile-live-card div {
+    display: grid;
+    gap: 2px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(150,166,188,.22);
+  }
+
+  .mobile-live-card div:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .mobile-live-card span {
+    color: #718096;
+    font-size: 12px;
+    line-height: 1.15;
+    font-weight: 750;
+  }
+
+  .mobile-live-card strong {
+    color: #263548;
+    font-size: 17px;
+    line-height: 1.15;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+  }
+
+  .export-host {
+    left: -20000px;
+  }
+}
+
+@media (max-width: 380px) {
+  .app {
+    padding: 8px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .mobile-live-frame {
+    padding: 8px;
+    border-radius: 30px;
+  }
+
+  .mobile-live-sheet {
+    border-radius: 24px;
+  }
+
+  .mobile-live-card strong {
+    font-size: 15px;
+  }
+}

@@ -89,3 +89,23 @@ Esta versão voltou para a base do layout aprovado e adicionou encaixe automáti
 - Não depende mais do zoom do Google Chrome.
 - A exportação continua separada em PC/Notebook, Tablet e Celular.
 - O layout aprovado foi preservado; o ajuste é apenas de visualização/encaixe.
+
+
+## Mobile Master Luxo
+
+A responsividade foi refeita a partir da base aprovada:
+
+- Em celular, o editor vira uma tela limpa em coluna única.
+- A prévia de desktop deixa de ser espremida no celular.
+- O mobile agora mostra uma prévia própria, em formato de celular, com visual premium.
+- A exportação para PC/Notebook, Tablet e Celular permanece intacta.
+- O layout desktop aprovado foi preservado.
+
+
+## Ajuste da exportação
+
+Nesta versão, a exportação foi simplificada:
+
+- Removidas as exportações separadas de **Tablet** e **Celular**.
+- Mantida apenas a exportação principal no padrão **PC / Notebook**.
+- O botão foi renomeado para **Exportar PNG**.

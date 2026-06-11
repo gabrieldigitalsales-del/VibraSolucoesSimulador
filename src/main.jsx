@@ -281,13 +281,63 @@ function MobilePreview({ data, exportRef, derived }) {
   );
 }
 
+
+function MobileLivePreview({ data, derived }) {
+  return (
+    <section className="mobile-live-shell">
+      <div className="mobile-live-frame">
+        <div className="mobile-live-notch" />
+        <div className="mobile-live-sheet">
+          <Decor />
+          <header className="mobile-live-top">
+            <div className="mobile-live-logo">
+              <img src={vibraLogo} alt="Vibra Soluções" />
+            </div>
+            <p>Vibra Soluções</p>
+            <h1>Simulação personalizada</h1>
+            <div className="mobile-live-info">
+              <span>Administradora: <strong>{displayText(data.administradora)}</strong></span>
+              <span>Validade: <strong>{displayText(data.validade)}</strong></span>
+              {String(data.subtitulo || '').trim() ? <span>{data.subtitulo}</span> : null}
+            </div>
+          </header>
+
+          <main className="mobile-live-content">
+            <article className="mobile-live-card">
+              <h2>Composição do crédito</h2>
+              <div><span>Crédito contratado</span><strong>{formatMoney(data.creditoContratado)}</strong></div>
+              <div><span>Prazo de pagamento</span><strong>{toNumber(data.prazoPagamento)} meses</strong></div>
+              <div><span>Parcelas até contemplação</span><strong>{formatMoney(data.parcelasAteContemplacao)}</strong></div>
+            </article>
+
+            <article className="mobile-live-card">
+              <h2>Cálculo do lance</h2>
+              <div><span>Lance embutido</span><strong>{formatMoney(data.lanceEmbutido)} / {formatPercent(derived.percentEmbutido)}</strong></div>
+              <div><span>Recursos próprios</span><strong>{formatMoney(data.lanceRecursos)} / {formatPercent(derived.percentRecursos)}</strong></div>
+              <div><span>Lance total</span><strong>{formatPercent(derived.percentTotal)}</strong></div>
+              <div><span>Crédito liberado</span><strong>{formatMoney(derived.creditoLiberado)}</strong></div>
+            </article>
+
+            <article className="mobile-live-card">
+              <h2>Saldo devedor</h2>
+              <div><span>Saldo após contemplação</span><strong>{formatMoney(derived.saldoApos)}</strong></div>
+              <div><span>Prazo restante</span><strong>{toNumber(data.prazoRestante)} meses</strong></div>
+              <div><span>Parcela após contemplação</span><strong>{formatMoney(data.parcelaApos)}</strong></div>
+              <div><span>Taxa de administração</span><strong>{displayText(data.taxaAdministracao)}</strong></div>
+              <div><span>Fundo de reserva</span><strong>{formatMoney(data.fundoReserva)}</strong></div>
+            </article>
+          </main>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const [data, setData] = useState(loadData);
   const screenRef = useRef(null);
   const previewWrapRef = useRef(null);
   const desktopRef = useRef(null);
-  const tabletRef = useRef(null);
-  const mobileRef = useRef(null);
   const [previewScale, setPreviewScale] = useState(0.88);
   const todayPlaceholder = useMemo(() => getTodayPlaceholder(), []);
 
@@ -406,19 +456,13 @@ function App() {
           </div>
         </InfoCard>
 
-        <InfoCard title="Exportações">
+        <InfoCard title="Exportação">
           <div className="export-buttons">
-            <button className="primary" onClick={() => exportFromRef(desktopRef, 'simulacao-vibra-pc-notebook')}>
-              <Download size={17} /> PC / Notebook
-            </button>
-            <button className="primary alt" onClick={() => exportFromRef(tabletRef, 'simulacao-vibra-tablet')}>
-              <Download size={17} /> Tablet
-            </button>
-            <button className="primary mobile-btn" onClick={() => exportFromRef(mobileRef, 'simulacao-vibra-celular')}>
-              <Download size={17} /> Celular
+            <button className="primary" onClick={() => exportFromRef(desktopRef, 'simulacao-vibra', 'png')}>
+              <Download size={17} /> Exportar PNG
             </button>
           </div>
-          <p className="export-note">Cada botão gera uma imagem no tamanho ideal para o dispositivo.</p>
+          <p className="export-note">A exportação gera a imagem em PNG no layout padrão de PC / Notebook.</p>
         </InfoCard>
 
         <div className="buttons">
@@ -437,12 +481,12 @@ function App() {
         <div className="preview-stage">
           <DesktopPreview data={data} exportRef={screenRef} derived={derived} variant="screen" />
         </div>
+
+        <MobileLivePreview data={data} derived={derived} />
       </section>
 
       <div className="export-host" aria-hidden="true">
         <DesktopPreview data={data} exportRef={desktopRef} derived={derived} variant="desktop" />
-        <DesktopPreview data={data} exportRef={tabletRef} derived={derived} variant="tablet" />
-        <MobilePreview data={data} exportRef={mobileRef} derived={derived} />
       </div>
     </div>
   );
