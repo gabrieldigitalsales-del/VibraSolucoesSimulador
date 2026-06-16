@@ -212,7 +212,7 @@ function DesktopPreview({ data, exportRef, derived, variant = 'screen' }) {
 
           <div className="item compact-item">
             <span>Fundo de reserva</span>
-            <strong>{formatMoney(data.fundoReserva)}</strong>
+            <strong>{formatPercent(data.fundoReserva)}</strong>
           </div>
         </article>
       </main>
@@ -274,7 +274,7 @@ function MobilePreview({ data, exportRef, derived }) {
           <MobileItem label="Prazo restante" value={`${toNumber(data.prazoRestante)} meses`} />
           <MobileItem label="Parcela após contemplação" value={formatMoney(data.parcelaApos)} />
           <MobileItem label="Taxa de administração" value={displayText(data.taxaAdministracao)} />
-          <MobileItem label="Fundo de reserva" value={formatMoney(data.fundoReserva)} />
+          <MobileItem label="Fundo de reserva" value={formatPercent(data.fundoReserva)} />
         </MobileCard>
       </main>
     </section>
@@ -324,7 +324,7 @@ function MobileLivePreview({ data, derived }) {
               <div><span>Prazo restante</span><strong>{toNumber(data.prazoRestante)} meses</strong></div>
               <div><span>Parcela após contemplação</span><strong>{formatMoney(data.parcelaApos)}</strong></div>
               <div><span>Taxa de administração</span><strong>{displayText(data.taxaAdministracao)}</strong></div>
-              <div><span>Fundo de reserva</span><strong>{formatMoney(data.fundoReserva)}</strong></div>
+              <div><span>Fundo de reserva</span><strong>{formatPercent(data.fundoReserva)}</strong></div>
             </article>
           </main>
         </div>
@@ -441,7 +441,7 @@ function App() {
             <EditableField label="Recursos próprios (R$)" type="number" value={data.lanceRecursos} onChange={(v) => set('lanceRecursos', v)} />
             <EditableField label="Prazo restante (meses)" type="number" value={data.prazoRestante} onChange={(v) => set('prazoRestante', v)} />
             <EditableField label="Parcela após contemplação (R$)" type="number" value={data.parcelaApos} onChange={(v) => set('parcelaApos', v)} />
-            <EditableField label="Fundo de reserva (R$)" type="number" value={data.fundoReserva} onChange={(v) => set('fundoReserva', v)} />
+            <EditableField label="Fundo de reserva (%)" type="number" value={data.fundoReserva} onChange={(v) => set('fundoReserva', v)} />
           </div>
           <EditableField label="Taxa de administração" value={data.taxaAdministracao} onChange={(v) => set('taxaAdministracao', v)} placeholder="Ex.: 0,4% a.m" />
         </InfoCard>
