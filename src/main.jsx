@@ -17,6 +17,7 @@ const defaultData = {
   parcelasAteContemplacao: 0,
   lanceEmbutido: 0,
   lanceRecursos: 0,
+  creditoLiberado: 0,
   prazoRestante: 0,
   parcelaApos: 0,
   taxaAdministracao: '',
@@ -181,7 +182,7 @@ function DesktopPreview({ data, exportRef, derived, variant = 'screen' }) {
 
           <div className="item final-item">
             <span>Crédito liberado</span>
-            <strong>{formatMoney(derived.creditoLiberado)}</strong>
+            <strong>{formatMoney(data.creditoLiberado)}</strong>
           </div>
         </article>
 
@@ -212,7 +213,7 @@ function DesktopPreview({ data, exportRef, derived, variant = 'screen' }) {
 
           <div className="item compact-item">
             <span>Fundo de reserva</span>
-            <strong>{formatPercent(data.fundoReserva)}</strong>
+            <strong>{formatMoney(data.fundoReserva)}</strong>
           </div>
         </article>
       </main>
@@ -266,7 +267,7 @@ function MobilePreview({ data, exportRef, derived }) {
           <MobileItem label="Lance embutido" value={`${formatMoney(data.lanceEmbutido)} / ${formatPercent(derived.percentEmbutido)}`} />
           <MobileItem label="Recursos próprios" value={`${formatMoney(data.lanceRecursos)} / ${formatPercent(derived.percentRecursos)}`} />
           <MobileItem label="Lance total" value={formatPercent(derived.percentTotal)} />
-          <MobileItem label="Crédito liberado" value={formatMoney(derived.creditoLiberado)} />
+          <MobileItem label="Crédito liberado" value={formatMoney(data.creditoLiberado)} />
         </MobileCard>
 
         <MobileCard title="Saldo devedor">
@@ -274,7 +275,7 @@ function MobilePreview({ data, exportRef, derived }) {
           <MobileItem label="Prazo restante" value={`${toNumber(data.prazoRestante)} meses`} />
           <MobileItem label="Parcela após contemplação" value={formatMoney(data.parcelaApos)} />
           <MobileItem label="Taxa de administração" value={displayText(data.taxaAdministracao)} />
-          <MobileItem label="Fundo de reserva" value={formatPercent(data.fundoReserva)} />
+          <MobileItem label="Fundo de reserva" value={formatMoney(data.fundoReserva)} />
         </MobileCard>
       </main>
     </section>
@@ -315,7 +316,7 @@ function MobileLivePreview({ data, derived }) {
               <div><span>Lance embutido</span><strong>{formatMoney(data.lanceEmbutido)} / {formatPercent(derived.percentEmbutido)}</strong></div>
               <div><span>Recursos próprios</span><strong>{formatMoney(data.lanceRecursos)} / {formatPercent(derived.percentRecursos)}</strong></div>
               <div><span>Lance total</span><strong>{formatPercent(derived.percentTotal)}</strong></div>
-              <div><span>Crédito liberado</span><strong>{formatMoney(derived.creditoLiberado)}</strong></div>
+              <div><span>Crédito liberado</span><strong>{formatMoney(data.creditoLiberado)}</strong></div>
             </article>
 
             <article className="mobile-live-card">
@@ -324,7 +325,7 @@ function MobileLivePreview({ data, derived }) {
               <div><span>Prazo restante</span><strong>{toNumber(data.prazoRestante)} meses</strong></div>
               <div><span>Parcela após contemplação</span><strong>{formatMoney(data.parcelaApos)}</strong></div>
               <div><span>Taxa de administração</span><strong>{displayText(data.taxaAdministracao)}</strong></div>
-              <div><span>Fundo de reserva</span><strong>{formatPercent(data.fundoReserva)}</strong></div>
+              <div><span>Fundo de reserva</span><strong>{formatMoney(data.fundoReserva)}</strong></div>
             </article>
           </main>
         </div>
@@ -393,7 +394,6 @@ function App() {
       percentEmbutido: calcPercent(embutido, credito),
       percentRecursos: calcPercent(recursos, credito),
       percentTotal: calcPercent(embutido + recursos, credito),
-      creditoLiberado: Math.max(credito - embutido, 0),
       saldoApos: parcelaApos * prazoRestante,
     };
   }, [data]);
@@ -439,9 +439,10 @@ function App() {
             <EditableField label="Parcelas até contemplação (R$)" type="number" value={data.parcelasAteContemplacao} onChange={(v) => set('parcelasAteContemplacao', v)} />
             <EditableField label="Lance embutido (R$)" type="number" value={data.lanceEmbutido} onChange={(v) => set('lanceEmbutido', v)} />
             <EditableField label="Recursos próprios (R$)" type="number" value={data.lanceRecursos} onChange={(v) => set('lanceRecursos', v)} />
+            <EditableField label="Crédito liberado (R$)" type="number" value={data.creditoLiberado} onChange={(v) => set('creditoLiberado', v)} />
             <EditableField label="Prazo restante (meses)" type="number" value={data.prazoRestante} onChange={(v) => set('prazoRestante', v)} />
             <EditableField label="Parcela após contemplação (R$)" type="number" value={data.parcelaApos} onChange={(v) => set('parcelaApos', v)} />
-            <EditableField label="Fundo de reserva (%)" type="number" value={data.fundoReserva} onChange={(v) => set('fundoReserva', v)} />
+            <EditableField label="Fundo de reserva (R$)" type="number" value={data.fundoReserva} onChange={(v) => set('fundoReserva', v)} />
           </div>
           <EditableField label="Taxa de administração" value={data.taxaAdministracao} onChange={(v) => set('taxaAdministracao', v)} placeholder="Ex.: 0,4% a.m" />
         </InfoCard>
@@ -451,7 +452,7 @@ function App() {
             <div className="summary-row"><span>% Lance embutido</span><strong>{formatPercent(derived.percentEmbutido)}</strong></div>
             <div className="summary-row"><span>% Recursos próprios</span><strong>{formatPercent(derived.percentRecursos)}</strong></div>
             <div className="summary-row"><span>% Lance total</span><strong>{formatPercent(derived.percentTotal)}</strong></div>
-            <div className="summary-row"><span>Crédito liberado</span><strong>{formatMoney(derived.creditoLiberado)}</strong></div>
+            <div className="summary-row"><span>Crédito liberado editável</span><strong>{formatMoney(data.creditoLiberado)}</strong></div>
             <div className="summary-row"><span>Saldo após contemplação</span><strong>{formatMoney(derived.saldoApos)}</strong></div>
           </div>
         </InfoCard>

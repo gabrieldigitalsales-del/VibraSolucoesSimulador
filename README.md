@@ -109,3 +109,14 @@ Nesta versão, a exportação foi simplificada:
 - Removidas as exportações separadas de **Tablet** e **Celular**.
 - Mantida apenas a exportação principal no padrão **PC / Notebook**.
 - O botão foi renomeado para **Exportar PNG**.
+
+
+## Crédito liberado editável
+
+Nesta versão, o campo **Crédito liberado** passou a ser editável no painel de valores.
+
+- Novo campo: **Crédito liberado (R$)**.
+- O valor digitado aparece na prévia e na exportação PNG.
+- Os percentuais de lance continuam automáticos.
+
+Observação: ao publicar na Vercel, o build será gerado novamente a partir do código atualizado.
