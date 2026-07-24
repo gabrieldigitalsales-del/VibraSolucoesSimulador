@@ -452,7 +452,7 @@ function App() {
             <div className="summary-row"><span>% Lance embutido</span><strong>{formatPercent(derived.percentEmbutido)}</strong></div>
             <div className="summary-row"><span>% Recursos próprios</span><strong>{formatPercent(derived.percentRecursos)}</strong></div>
             <div className="summary-row"><span>% Lance total</span><strong>{formatPercent(derived.percentTotal)}</strong></div>
-            <div className="summary-row"><span>Crédito liberado editável</span><strong>{formatMoney(data.creditoLiberado)}</strong></div>
+            <div className="summary-row"><span>Crédito liberado</span><strong>{formatMoney(data.creditoLiberado)}</strong></div>
             <div className="summary-row"><span>Saldo após contemplação</span><strong>{formatMoney(derived.saldoApos)}</strong></div>
           </div>
         </InfoCard>
