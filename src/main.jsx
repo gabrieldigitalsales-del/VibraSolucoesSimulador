@@ -14,7 +14,8 @@ const defaultData = {
   subtitulo: '',
   creditoContratado: 0,
   prazoPagamento: 0,
-  parcelasAteContemplacao: 0,
+  primeiraParcela: 0,
+  demaisParcelas: 0,
   lanceEmbutido: 0,
   lanceRecursos: 0,
   creditoLiberado: 0,
@@ -155,8 +156,13 @@ function DesktopPreview({ data, exportRef, derived, variant = 'screen' }) {
           </div>
 
           <div className="item">
-            <span>Parcelas até a contemplação</span>
-            <strong>{formatMoney(data.parcelasAteContemplacao)}</strong>
+            <span>Primeira parcela</span>
+            <strong>{formatMoney(data.primeiraParcela)}</strong>
+          </div>
+
+          <div className="item">
+            <span>Demais parcelas</span>
+            <strong>{formatMoney(data.demaisParcelas)}</strong>
           </div>
         </article>
 
@@ -213,7 +219,7 @@ function DesktopPreview({ data, exportRef, derived, variant = 'screen' }) {
 
           <div className="item compact-item">
             <span>Fundo de reserva</span>
-            <strong>{formatMoney(data.fundoReserva)}</strong>
+            <strong>{formatPercent(data.fundoReserva)}</strong>
           </div>
         </article>
       </main>
@@ -260,7 +266,8 @@ function MobilePreview({ data, exportRef, derived }) {
         <MobileCard title="Composição do crédito">
           <MobileItem label="Crédito contratado" value={formatMoney(data.creditoContratado)} />
           <MobileItem label="Prazo de pagamento" value={`${toNumber(data.prazoPagamento)} meses`} />
-          <MobileItem label="Parcelas até contemplação" value={formatMoney(data.parcelasAteContemplacao)} />
+          <MobileItem label="Primeira parcela" value={formatMoney(data.primeiraParcela)} />
+          <MobileItem label="Demais parcelas" value={formatMoney(data.demaisParcelas)} />
         </MobileCard>
 
         <MobileCard title="Cálculo do lance">
@@ -275,7 +282,7 @@ function MobilePreview({ data, exportRef, derived }) {
           <MobileItem label="Prazo restante" value={`${toNumber(data.prazoRestante)} meses`} />
           <MobileItem label="Parcela após contemplação" value={formatMoney(data.parcelaApos)} />
           <MobileItem label="Taxa de administração" value={displayText(data.taxaAdministracao)} />
-          <MobileItem label="Fundo de reserva" value={formatMoney(data.fundoReserva)} />
+          <MobileItem label="Fundo de reserva" value={formatPercent(data.fundoReserva)} />
         </MobileCard>
       </main>
     </section>
@@ -308,7 +315,8 @@ function MobileLivePreview({ data, derived }) {
               <h2>Composição do crédito</h2>
               <div><span>Crédito contratado</span><strong>{formatMoney(data.creditoContratado)}</strong></div>
               <div><span>Prazo de pagamento</span><strong>{toNumber(data.prazoPagamento)} meses</strong></div>
-              <div><span>Parcelas até contemplação</span><strong>{formatMoney(data.parcelasAteContemplacao)}</strong></div>
+              <div><span>Primeira parcela</span><strong>{formatMoney(data.primeiraParcela)}</strong></div>
+              <div><span>Demais parcelas</span><strong>{formatMoney(data.demaisParcelas)}</strong></div>
             </article>
 
             <article className="mobile-live-card">
@@ -325,7 +333,7 @@ function MobileLivePreview({ data, derived }) {
               <div><span>Prazo restante</span><strong>{toNumber(data.prazoRestante)} meses</strong></div>
               <div><span>Parcela após contemplação</span><strong>{formatMoney(data.parcelaApos)}</strong></div>
               <div><span>Taxa de administração</span><strong>{displayText(data.taxaAdministracao)}</strong></div>
-              <div><span>Fundo de reserva</span><strong>{formatMoney(data.fundoReserva)}</strong></div>
+              <div><span>Fundo de reserva</span><strong>{formatPercent(data.fundoReserva)}</strong></div>
             </article>
           </main>
         </div>
@@ -436,13 +444,14 @@ function App() {
           <div className="grid two-columns">
             <EditableField label="Crédito contratado (R$)" type="number" value={data.creditoContratado} onChange={(v) => set('creditoContratado', v)} />
             <EditableField label="Prazo de pagamento (meses)" type="number" value={data.prazoPagamento} onChange={(v) => set('prazoPagamento', v)} />
-            <EditableField label="Parcelas até contemplação (R$)" type="number" value={data.parcelasAteContemplacao} onChange={(v) => set('parcelasAteContemplacao', v)} />
+            <EditableField label="Primeira parcela (R$)" type="number" value={data.primeiraParcela} onChange={(v) => set('primeiraParcela', v)} />
+            <EditableField label="Demais parcelas (R$)" type="number" value={data.demaisParcelas} onChange={(v) => set('demaisParcelas', v)} />
             <EditableField label="Lance embutido (R$)" type="number" value={data.lanceEmbutido} onChange={(v) => set('lanceEmbutido', v)} />
             <EditableField label="Recursos próprios (R$)" type="number" value={data.lanceRecursos} onChange={(v) => set('lanceRecursos', v)} />
             <EditableField label="Crédito liberado (R$)" type="number" value={data.creditoLiberado} onChange={(v) => set('creditoLiberado', v)} />
             <EditableField label="Prazo restante (meses)" type="number" value={data.prazoRestante} onChange={(v) => set('prazoRestante', v)} />
             <EditableField label="Parcela após contemplação (R$)" type="number" value={data.parcelaApos} onChange={(v) => set('parcelaApos', v)} />
-            <EditableField label="Fundo de reserva (R$)" type="number" value={data.fundoReserva} onChange={(v) => set('fundoReserva', v)} />
+            <EditableField label="Fundo de reserva (%)" type="number" value={data.fundoReserva} onChange={(v) => set('fundoReserva', v)} />
           </div>
           <EditableField label="Taxa de administração" value={data.taxaAdministracao} onChange={(v) => set('taxaAdministracao', v)} placeholder="Ex.: 0,4% a.m" />
         </InfoCard>
