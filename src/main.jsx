@@ -8,6 +8,38 @@ import './style.css';
 const STORAGE_KEY = 'simulacao-vibra-solucoes-v3';
 const OLD_STORAGE_KEYS = ['simulacao-vibra-solucoes', 'simulacao-vibra-solucoes-v2', 'simulacao-vibra'];
 
+const visibilityDefaults = {
+  creditoContratado: true,
+  prazoPagamento: true,
+  primeiraParcela: true,
+  demaisParcelas: true,
+  lanceEmbutido: true,
+  lanceRecursos: true,
+  lanceTotalPercentual: true,
+  creditoLiberado: true,
+  saldoApos: true,
+  prazoRestante: true,
+  parcelaApos: true,
+  taxaAdministracao: true,
+  fundoReserva: true,
+};
+
+const toggleOptions = [
+  ['creditoContratado', 'Crédito contratado'],
+  ['prazoPagamento', 'Prazo de pagamento'],
+  ['primeiraParcela', 'Primeira parcela'],
+  ['demaisParcelas', 'Demais parcelas'],
+  ['lanceEmbutido', 'Lance embutido'],
+  ['lanceRecursos', 'Recursos próprios'],
+  ['lanceTotalPercentual', 'Lance total em percentual'],
+  ['creditoLiberado', 'Crédito liberado'],
+  ['saldoApos', 'Saldo após contemplação'],
+  ['prazoRestante', 'Prazo restante'],
+  ['parcelaApos', 'Parcela após contemplação'],
+  ['taxaAdministracao', 'Taxa de administração'],
+  ['fundoReserva', 'Fundo de reserva'],
+];
+
 const defaultData = {
   validade: '',
   administradora: '',
@@ -23,6 +55,7 @@ const defaultData = {
   parcelaApos: 0,
   taxaAdministracao: '',
   fundoReserva: 0,
+  visibleFields: { ...visibilityDefaults },
 };
 
 const moneyFormatter = new Intl.NumberFormat('pt-BR', {
@@ -65,12 +98,21 @@ function getTodayPlaceholder() {
   return new Intl.DateTimeFormat('pt-BR').format(new Date());
 }
 
+function getVisibleFields(data) {
+  return { ...visibilityDefaults, ...(data?.visibleFields || {}) };
+}
+
 function loadData() {
   try {
     OLD_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return defaultData;
-    return { ...defaultData, ...JSON.parse(saved) };
+    const parsed = JSON.parse(saved);
+    return {
+      ...defaultData,
+      ...parsed,
+      visibleFields: { ...visibilityDefaults, ...(parsed?.visibleFields || {}) },
+    };
   } catch {
     return defaultData;
   }
@@ -88,6 +130,33 @@ function EditableField({ label, type = 'text', value, onChange, placeholder = ''
         step={step}
         onChange={(e) => onChange(type === 'number' ? e.target.value : e.target.value)}
       />
+    </label>
+  );
+}
+
+function VisibilityToggle({ label, checked, onChange }) {
+  return (
+    <label
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+        padding: '12px 14px',
+        border: '1px solid rgba(15, 23, 42, 0.12)',
+        borderRadius: '12px',
+        background: '#fff',
+        cursor: 'pointer',
+        fontSize: '0.94rem',
+        fontWeight: 600,
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+      />
+      <span>{label}</span>
     </label>
   );
 }
@@ -136,6 +205,8 @@ function Decor() {
 }
 
 function DesktopPreview({ data, exportRef, derived, variant = 'screen' }) {
+  const visible = getVisibleFields(data);
+
   return (
     <section className={`sheet sheet-${variant}`} ref={exportRef}>
       <Decor />
@@ -144,153 +215,40 @@ function DesktopPreview({ data, exportRef, derived, variant = 'screen' }) {
       <main className="columns">
         <article className="col">
           <h2>COMPOSIÇÃO<br />DO CRÉDITO</h2>
-
-          <div className="item">
-            <span>Crédito contratado</span>
-            <strong>{formatMoney(data.creditoContratado)}</strong>
-          </div>
-
-          <div className="item">
-            <span>Prazo de pagamento</span>
-            <strong>{toNumber(data.prazoPagamento)} meses</strong>
-          </div>
-
-          <div className="item">
-            <span>Primeira parcela</span>
-            <strong>{formatMoney(data.primeiraParcela)}</strong>
-          </div>
-
-          <div className="item">
-            <span>Demais parcelas</span>
-            <strong>{formatMoney(data.demaisParcelas)}</strong>
-          </div>
+          {visible.creditoContratado && <div className="item"><span>Crédito contratado</span><strong>{formatMoney(data.creditoContratado)}</strong></div>}
+          {visible.prazoPagamento && <div className="item"><span>Prazo de pagamento</span><strong>{toNumber(data.prazoPagamento)} meses</strong></div>}
+          {visible.primeiraParcela && <div className="item"><span>Primeira parcela</span><strong>{formatMoney(data.primeiraParcela)}</strong></div>}
+          {visible.demaisParcelas && <div className="item"><span>Demais parcelas</span><strong>{formatMoney(data.demaisParcelas)}</strong></div>}
         </article>
 
         <div className="divider"><i>›</i></div>
 
         <article className="col">
           <h2>CÁLCULO<br />DO LANCE</h2>
-
-          <div className="item compact-item">
-            <span>Lance embutido</span>
-            <strong>{formatMoney(data.lanceEmbutido)} / {formatPercent(derived.percentEmbutido)}</strong>
-          </div>
-
-          <div className="item compact-item">
-            <span>Lance com recursos próprios</span>
-            <strong>{formatMoney(data.lanceRecursos)} / {formatPercent(derived.percentRecursos)}</strong>
-          </div>
-
-          <div className="item compact-item">
-            <span>Lance total em percentual</span>
-            <strong>{formatPercent(derived.percentTotal)}</strong>
-          </div>
-
-          <div className="item final-item">
-            <span>Crédito liberado</span>
-            <strong>{formatMoney(data.creditoLiberado)}</strong>
-          </div>
+          {visible.lanceEmbutido && <div className="item compact-item"><span>Lance embutido</span><strong>{formatMoney(data.lanceEmbutido)} / {formatPercent(derived.percentEmbutido)}</strong></div>}
+          {visible.lanceRecursos && <div className="item compact-item"><span>Lance com recursos próprios</span><strong>{formatMoney(data.lanceRecursos)} / {formatPercent(derived.percentRecursos)}</strong></div>}
+          {visible.lanceTotalPercentual && <div className="item compact-item"><span>Lance total em percentual</span><strong>{formatPercent(derived.percentTotal)}</strong></div>}
+          {visible.creditoLiberado && <div className="item final-item"><span>Crédito liberado</span><strong>{formatMoney(data.creditoLiberado)}</strong></div>}
         </article>
 
         <div className="divider"><i>›</i></div>
 
         <article className="col">
           <h2>SALDO DEVEDOR</h2>
-
-          <div className="item compact-item">
-            <span>Saldo após contemplação</span>
-            <strong>{formatMoney(derived.saldoApos)}</strong>
-          </div>
-
-          <div className="item compact-item">
-            <span>Prazo restante</span>
-            <strong>{toNumber(data.prazoRestante)} meses</strong>
-          </div>
-
-          <div className="item compact-item">
-            <span>Parcela após contemplação</span>
-            <strong>{formatMoney(data.parcelaApos)}</strong>
-          </div>
-
-          <div className="item compact-item">
-            <span>Taxa de administração</span>
-            <strong>{displayText(data.taxaAdministracao)}</strong>
-          </div>
-
-          <div className="item compact-item">
-            <span>Fundo de reserva</span>
-            <strong>{formatPercent(data.fundoReserva)}</strong>
-          </div>
+          {visible.saldoApos && <div className="item compact-item"><span>Saldo após contemplação</span><strong>{formatMoney(derived.saldoApos)}</strong></div>}
+          {visible.prazoRestante && <div className="item compact-item"><span>Prazo restante</span><strong>{toNumber(data.prazoRestante)} meses</strong></div>}
+          {visible.parcelaApos && <div className="item compact-item"><span>Parcela após contemplação</span><strong>{formatMoney(data.parcelaApos)}</strong></div>}
+          {visible.taxaAdministracao && <div className="item compact-item"><span>Taxa de administração</span><strong>{displayText(data.taxaAdministracao)}</strong></div>}
+          {visible.fundoReserva && <div className="item compact-item"><span>Fundo de reserva</span><strong>{formatPercent(data.fundoReserva)}</strong></div>}
         </article>
       </main>
     </section>
   );
 }
 
-function MobileCard({ title, children }) {
-  return (
-    <article className="mobile-card">
-      <h2>{title}</h2>
-      <div className="mobile-card-grid">{children}</div>
-    </article>
-  );
-}
-
-function MobileItem({ label, value }) {
-  return (
-    <div className="mobile-item">
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  );
-}
-
-function MobilePreview({ data, exportRef, derived }) {
-  return (
-    <section className="mobile-sheet" ref={exportRef}>
-      <Decor />
-      <header className="mobile-top">
-        <div className="mobile-logo-wrap">
-          <img src={vibraLogo} alt="Vibra Soluções" />
-        </div>
-        <p className="mobile-eyebrow">Vibra Soluções</p>
-        <h1>Simulação personalizada</h1>
-        <div className="mobile-info">
-          <p>Administradora: <strong>{displayText(data.administradora)}</strong></p>
-          <p>Plano válido até: <strong>{displayText(data.validade)}</strong></p>
-          {String(data.subtitulo || '').trim() ? <p>{data.subtitulo}</p> : null}
-        </div>
-      </header>
-
-      <main className="mobile-content">
-        <MobileCard title="Composição do crédito">
-          <MobileItem label="Crédito contratado" value={formatMoney(data.creditoContratado)} />
-          <MobileItem label="Prazo de pagamento" value={`${toNumber(data.prazoPagamento)} meses`} />
-          <MobileItem label="Primeira parcela" value={formatMoney(data.primeiraParcela)} />
-          <MobileItem label="Demais parcelas" value={formatMoney(data.demaisParcelas)} />
-        </MobileCard>
-
-        <MobileCard title="Cálculo do lance">
-          <MobileItem label="Lance embutido" value={`${formatMoney(data.lanceEmbutido)} / ${formatPercent(derived.percentEmbutido)}`} />
-          <MobileItem label="Recursos próprios" value={`${formatMoney(data.lanceRecursos)} / ${formatPercent(derived.percentRecursos)}`} />
-          <MobileItem label="Lance total" value={formatPercent(derived.percentTotal)} />
-          <MobileItem label="Crédito liberado" value={formatMoney(data.creditoLiberado)} />
-        </MobileCard>
-
-        <MobileCard title="Saldo devedor">
-          <MobileItem label="Saldo após contemplação" value={formatMoney(derived.saldoApos)} />
-          <MobileItem label="Prazo restante" value={`${toNumber(data.prazoRestante)} meses`} />
-          <MobileItem label="Parcela após contemplação" value={formatMoney(data.parcelaApos)} />
-          <MobileItem label="Taxa de administração" value={displayText(data.taxaAdministracao)} />
-          <MobileItem label="Fundo de reserva" value={formatPercent(data.fundoReserva)} />
-        </MobileCard>
-      </main>
-    </section>
-  );
-}
-
-
 function MobileLivePreview({ data, derived }) {
+  const visible = getVisibleFields(data);
+
   return (
     <section className="mobile-live-shell">
       <div className="mobile-live-frame">
@@ -313,27 +271,27 @@ function MobileLivePreview({ data, derived }) {
           <main className="mobile-live-content">
             <article className="mobile-live-card">
               <h2>Composição do crédito</h2>
-              <div><span>Crédito contratado</span><strong>{formatMoney(data.creditoContratado)}</strong></div>
-              <div><span>Prazo de pagamento</span><strong>{toNumber(data.prazoPagamento)} meses</strong></div>
-              <div><span>Primeira parcela</span><strong>{formatMoney(data.primeiraParcela)}</strong></div>
-              <div><span>Demais parcelas</span><strong>{formatMoney(data.demaisParcelas)}</strong></div>
+              {visible.creditoContratado && <div><span>Crédito contratado</span><strong>{formatMoney(data.creditoContratado)}</strong></div>}
+              {visible.prazoPagamento && <div><span>Prazo de pagamento</span><strong>{toNumber(data.prazoPagamento)} meses</strong></div>}
+              {visible.primeiraParcela && <div><span>Primeira parcela</span><strong>{formatMoney(data.primeiraParcela)}</strong></div>}
+              {visible.demaisParcelas && <div><span>Demais parcelas</span><strong>{formatMoney(data.demaisParcelas)}</strong></div>}
             </article>
 
             <article className="mobile-live-card">
               <h2>Cálculo do lance</h2>
-              <div><span>Lance embutido</span><strong>{formatMoney(data.lanceEmbutido)} / {formatPercent(derived.percentEmbutido)}</strong></div>
-              <div><span>Recursos próprios</span><strong>{formatMoney(data.lanceRecursos)} / {formatPercent(derived.percentRecursos)}</strong></div>
-              <div><span>Lance total</span><strong>{formatPercent(derived.percentTotal)}</strong></div>
-              <div><span>Crédito liberado</span><strong>{formatMoney(data.creditoLiberado)}</strong></div>
+              {visible.lanceEmbutido && <div><span>Lance embutido</span><strong>{formatMoney(data.lanceEmbutido)} / {formatPercent(derived.percentEmbutido)}</strong></div>}
+              {visible.lanceRecursos && <div><span>Recursos próprios</span><strong>{formatMoney(data.lanceRecursos)} / {formatPercent(derived.percentRecursos)}</strong></div>}
+              {visible.lanceTotalPercentual && <div><span>Lance total</span><strong>{formatPercent(derived.percentTotal)}</strong></div>}
+              {visible.creditoLiberado && <div><span>Crédito liberado</span><strong>{formatMoney(data.creditoLiberado)}</strong></div>}
             </article>
 
             <article className="mobile-live-card">
               <h2>Saldo devedor</h2>
-              <div><span>Saldo após contemplação</span><strong>{formatMoney(derived.saldoApos)}</strong></div>
-              <div><span>Prazo restante</span><strong>{toNumber(data.prazoRestante)} meses</strong></div>
-              <div><span>Parcela após contemplação</span><strong>{formatMoney(data.parcelaApos)}</strong></div>
-              <div><span>Taxa de administração</span><strong>{displayText(data.taxaAdministracao)}</strong></div>
-              <div><span>Fundo de reserva</span><strong>{formatPercent(data.fundoReserva)}</strong></div>
+              {visible.saldoApos && <div><span>Saldo após contemplação</span><strong>{formatMoney(derived.saldoApos)}</strong></div>}
+              {visible.prazoRestante && <div><span>Prazo restante</span><strong>{toNumber(data.prazoRestante)} meses</strong></div>}
+              {visible.parcelaApos && <div><span>Parcela após contemplação</span><strong>{formatMoney(data.parcelaApos)}</strong></div>}
+              {visible.taxaAdministracao && <div><span>Taxa de administração</span><strong>{displayText(data.taxaAdministracao)}</strong></div>}
+              {visible.fundoReserva && <div><span>Fundo de reserva</span><strong>{formatPercent(data.fundoReserva)}</strong></div>}
             </article>
           </main>
         </div>
@@ -349,6 +307,7 @@ function App() {
   const desktopRef = useRef(null);
   const [previewScale, setPreviewScale] = useState(0.88);
   const todayPlaceholder = useMemo(() => getTodayPlaceholder(), []);
+  const visibleFields = getVisibleFields(data);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -361,7 +320,6 @@ function App() {
 
       const availableWidth = Math.max(wrap.clientWidth - 18, 320);
       const availableHeight = Math.max(wrap.clientHeight - 18, 220);
-
       const scaleByWidth = availableWidth / 1206;
       const scaleByHeight = availableHeight / 676;
       const nextScale = Math.max(0.35, Math.min(0.90, scaleByWidth, scaleByHeight));
@@ -384,6 +342,15 @@ function App() {
   const set = (key, value) => setData((prev) => ({
     ...prev,
     [key]: typeof prev[key] === 'number' ? toNumber(value) : value,
+  }));
+
+  const setVisibility = (key, checked) => setData((prev) => ({
+    ...prev,
+    visibleFields: {
+      ...visibilityDefaults,
+      ...(prev.visibleFields || {}),
+      [key]: checked,
+    },
   }));
 
   const handleResetAll = () => {
@@ -456,6 +423,19 @@ function App() {
           <EditableField label="Taxa de administração" value={data.taxaAdministracao} onChange={(v) => set('taxaAdministracao', v)} placeholder="Ex.: 0,4% a.m" />
         </InfoCard>
 
+        <InfoCard title="Exibir / ocultar campos">
+          <div className="grid two-columns">
+            {toggleOptions.map(([key, label]) => (
+              <VisibilityToggle
+                key={key}
+                label={label}
+                checked={visibleFields[key] !== false}
+                onChange={(checked) => setVisibility(key, checked)}
+              />
+            ))}
+          </div>
+        </InfoCard>
+
         <InfoCard title="Cálculos automáticos">
           <div className="summary-grid">
             <div className="summary-row"><span>% Lance embutido</span><strong>{formatPercent(derived.percentEmbutido)}</strong></div>
@@ -483,15 +463,10 @@ function App() {
         <p className="hint"><Save size={14} /> Os dados ficam salvos no navegador enquanto você edita.</p>
       </aside>
 
-      <section
-        className="preview-wrap"
-        ref={previewWrapRef}
-        style={{ '--preview-scale': previewScale }}
-      >
+      <section className="preview-wrap" ref={previewWrapRef} style={{ '--preview-scale': previewScale }}>
         <div className="preview-stage">
           <DesktopPreview data={data} exportRef={screenRef} derived={derived} variant="screen" />
         </div>
-
         <MobileLivePreview data={data} derived={derived} />
       </section>
 
